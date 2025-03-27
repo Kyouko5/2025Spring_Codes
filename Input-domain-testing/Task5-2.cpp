@@ -1,17 +1,17 @@
 /*
  * @Author: Kyouko
  * @Date: 2025-03-27 09:06:11
- * @LastEditTime: 2025-03-27 09:06:23
- * @Description: 将pict_output.txt转换为CT_test_data.txt，映射Leap为2020、NonLeap为2021，并计算预期结果。
+ * @LastEditTime: 2025-03-28 01:18:53
+ * @Description: 将Task5-1.txt转换为CT_test_data.txt，映射Leap为2020、NonLeap为2021，并计算预期结果。
  * @FilePath: /Code/Input-domain-testing/Task5-2.cpp
  */
 #include <fstream>
 #include <sstream>
 #include <vector>
 
-bool LeapYear(int year) { /* 同任务1 */ }
-bool ValidDate(int year, int month, int day) { /* 同任务1 */ }
-std::tuple<int, int, int> computeNextDate(int year, int month, int day) { /* 同任务4 */ }
+bool LeapYear(int year);
+bool ValidDate(int year, int month, int day);
+extern std::tuple<int, int, int> computeNextDate(int year, int month, int day);
 
 std::vector<std::string> split(const std::string& s, char delim) {
     std::vector<std::string> tokens;
