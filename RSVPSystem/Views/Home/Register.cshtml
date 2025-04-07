@@ -1,0 +1,20 @@
+﻿@model RSVPSystem.Models.Attendee
+
+<h1>Thanks for attending @ViewBag.PartyName</h1>
+
+<form asp-action="Register" method="post">
+    <input type="hidden" name="partyName" value="@ViewBag.PartyName" />
+    <div class="form-group">
+        <label>Your name</label>
+        <input asp-for="Name" class="form-control" required />
+    </div>
+    <div class="form-group">
+        <label>Your email</label>
+        <input asp-for="Email" class="form-control" type="email" required />
+    </div>
+    <div class="form-group">
+        <label>Your phone number</label>
+        <input asp-for="Phone" class="form-control" required />
+    </div>
+    <button type="submit" class="btn btn-primary">Submit RSVP</button>
+</form>
