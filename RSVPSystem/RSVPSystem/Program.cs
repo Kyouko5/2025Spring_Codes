@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
 using RSVPSystem.Data;
 
 var builder = WebApplication.CreateBuilder(args);
