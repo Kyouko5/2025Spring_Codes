@@ -1,0 +1,57 @@
+@model IEnumerable<RSVPSystem.Models.Attendee>
+
+@{
+    ViewData["Title"] = "RSVP列表";
+}
+
+<h1>RSVP列表</h1>
+
+<p>
+    <a asp-action="Create" class="btn btn-primary">添加新RSVP</a>
+</p>
+
+@foreach (var attendee in Model)
+{
+    <div class="card mb-3">
+        <div class="card-header">
+            <h5>@attendee.Name</h5>
+        </div>
+        <div class="card-body">
+            <p><strong>邮箱:</strong> @attendee.Email</p>
+            <p><strong>电话:</strong> @attendee.Phone</p>
+            
+            <h6>已报名参加的派对:</h6>
+            @if (attendee.AttendeeParties?.Any() == true)
+            {
+                <table class="table table-sm">
+                    <thead>
+                        <tr>
+                            <th>派对名称</th>
+                            <th>地点</th>
+                            <th>日期</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var ap in attendee.AttendeeParties)
+                        {
+                            <tr>
+                                <td>@ap.Party.Name</td>
+                                <td>@ap.Party.Location</td>
+                                <td>@ap.Party.Date.ToShortDateString()</td>
+                                <td>
+                                    <a asp-action="Delete" asp-route-attendeeId="@ap.AttendeeId" asp-route-partyId="@ap.PartyId" 
+                                       class="btn btn-sm btn-danger">取消报名</a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+            else
+            {
+                <p>尚未报名参加任何派对</p>
+            }
+        </div>
+    </div>
+} 
