@@ -47,9 +47,16 @@ namespace RSVPSystem.Controllers
             if (existingRsvp != null)
             {
                 ModelState.AddModelError(string.Empty, "This person is already registered for this party.");
+                
                 ViewData["AttendeeId"] = new SelectList(await _context.Attendees.ToListAsync(), "Id", "Name", attendeeId);
                 ViewData["PartyId"] = new SelectList(await _context.Parties.ToListAsync(), "Id", "Name", partyId);
                 return View();
+                /* ViewData
+                    第一个参数是数据源列表
+                    "Id"指定了value属性（表单提交时使用的值）
+                    "Name"指定了显示文本
+                    最后的参数(attendeeId/partyId)设置了默认选中的值
+                */
             }
 
             if (ModelState.IsValid)

@@ -19,6 +19,7 @@ namespace RSVPSystem.Data
             modelBuilder.Entity<AttendeeParty>()
                 .HasKey(ap => new { ap.AttendeeId, ap.PartyId });
 
+            // 多对多拆分成两个一对多
             modelBuilder.Entity<AttendeeParty>()
                 .HasOne(ap => ap.Attendee)
                 .WithMany(a => a.AttendeeParties)
