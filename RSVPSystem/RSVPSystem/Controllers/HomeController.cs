@@ -1,4 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using RSVPSystem.Data;
 using RSVPSystem.Models;
 using System.Diagnostics;
 
@@ -6,56 +8,84 @@ namespace RSVPSystem.Controllers
 {
     public class HomeController : Controller
     {
-        // 模拟数据库，使用静态列表存储派对和参与者信息
-        private static readonly List<Party> Parties = new List<Party>
-        {
-            new Party { Name = "Party1", Location = "L1", Date = new DateTime(2020, 12, 21) },
-            new Party { Name = "Party2", Location = "L2", Date = new DateTime(2020, 12, 22) },
-            new Party { Name = "Party3", Location = "L3", Date = new DateTime(2020, 12, 25) }
-        };
+        private readonly ApplicationDbContext _context;
 
-        private static readonly List<Attendee> Attendees = new List<Attendee>
+        public HomeController(ApplicationDbContext context)
         {
-            new Attendee { Id = 1, Name = "Alice Jones", Email = "alice@example.com", Phone = "555-123-5678", Parties = new List<string> { "Party1", "Party2" } },
-            new Attendee { Id = 2, Name = "Peter Davies", Email = "peter@example.com", Phone = "555-456-7890", Parties = new List<string> { "Party1" } },
-            new Attendee { Id = 3, Name = "Dora Francis", Email = "dora@example.com", Phone = "555-456-1234", Parties = new List<string> { "Party1" } },
-            new Attendee { Id = 4, Name = "Bob Smith", Email = "bob@example.com", Phone = "555-123-1234", Parties = new List<string> { "Party1" } }
-        };
-
-        public IActionResult Index()
-        {
-            // 显示派对列表
-            return View(Parties);
+            _context = context;
         }
 
-        // 显示注册页面
-        [HttpGet]
-        public IActionResult Register(string partyName)
+        public async Task<IActionResult> Index()
         {
-            ViewBag.PartyName = partyName;
+            // Display list of parties
+            return View(await _context.Parties.ToListAsync());
+        }
+
+        // Display registration page
+        [HttpGet]
+        public IActionResult Register(int partyId)
+        {
+            ViewBag.Party = _context.Parties.FirstOrDefault(p => p.Id == partyId);
             return View();
         }
 
-        // 处理注册表单提交
+        // Process registration submission
         [HttpPost]
-        public IActionResult Register(Attendee attendee, string partyName)
+        public async Task<IActionResult> Register(Attendee attendee, int partyId)
         {
             if (ModelState.IsValid)
             {
-                attendee.Id = Attendees.Count + 1;
-                attendee.Parties.Add(partyName);
-                Attendees.Add(attendee);
-                return RedirectToAction("ShowAttendees", new { partyName = partyName });
+                // Check if attendee already exists
+                var existingAttendee = await _context.Attendees
+                    .FirstOrDefaultAsync(a => a.Email == attendee.Email);
+
+                if (existingAttendee == null)
+                {
+                    // Add new attendee
+                    _context.Attendees.Add(attendee);
+                    await _context.SaveChangesAsync();
+                    existingAttendee = attendee;
+                }
+
+                // Check if already registered for this party
+                var alreadyRegistered = await _context.Set<AttendeeParty>()
+                    .AnyAsync(ap => ap.AttendeeId == existingAttendee.Id && ap.PartyId == partyId);
+
+                if (!alreadyRegistered)
+                {
+                    // Create relationship between attendee and party
+                    var attendeeParty = new AttendeeParty
+                    {
+                        AttendeeId = existingAttendee.Id,
+                        PartyId = partyId
+                    };
+                    
+                    _context.Add(attendeeParty);
+                    await _context.SaveChangesAsync();
+                }
+
+                return RedirectToAction("ShowAttendees", new { partyId });
             }
-            ViewBag.PartyName = partyName;
+
+            ViewBag.Party = _context.Parties.FirstOrDefault(p => p.Id == partyId);
             return View(attendee);
         }
 
-        // 显示参与者信息
-        public IActionResult ShowAttendees(string partyName)
+        // Show attendee information
+        public async Task<IActionResult> ShowAttendees(int partyId)
         {
-            var attendees = Attendees.Where(a => a.Parties.Contains(partyName)).ToList();
-            ViewBag.PartyName = partyName;
+            var party = await _context.Parties.FindAsync(partyId);
+            
+            if (party == null)
+            {
+                return NotFound();
+            }
+
+            var attendees = await _context.Attendees
+                .Where(a => a.AttendeeParties.Any(ap => ap.PartyId == partyId))
+                .ToListAsync();
+                
+            ViewBag.PartyName = party.Name;
             return View(attendees);
         }
 

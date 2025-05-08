@@ -1,9 +1,9 @@
 ﻿@model RSVPSystem.Models.Attendee
 
-<h1>Thanks for attending @ViewBag.PartyName</h1>
+<h1>Thanks for attending @ViewBag.Party?.Name</h1>
 
 <form asp-action="Register" method="post">
-    <input type="hidden" name="partyName" value="@ViewBag.PartyName" />
+    <input type="hidden" name="partyId" value="@ViewBag.Party?.Id" />
     <div class="form-group">
         <label>Your name</label>
         <input asp-for="Name" class="form-control" required />

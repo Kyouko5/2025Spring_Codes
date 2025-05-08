@@ -1,4 +1,4 @@
-﻿@model List<RSVPSystem.Models.Attendee>
+﻿@model IEnumerable<RSVPSystem.Models.Attendee>
 
 <h1>Attendees for @ViewBag.PartyName</h1>
 
@@ -22,25 +22,4 @@
     </tbody>
 </table>
 
-<h2>Attendees and Their Parties</h2>
-<table class="table">
-    <thead>
-        <tr>
-            <th>Name</th>
-            <th>Email</th>
-            <th>Phone</th>
-            <th>Parties</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var attendee in Model)
-        {
-            <tr>
-                <td>@attendee.Name</td>
-                <td>@attendee.Email</td>
-                <td>@attendee.Phone</td>
-                <td>@string.Join(", ", attendee.Parties)</td>
-            </tr>
-        }
-    </tbody>
-</table>
+<a asp-action="Index" class="btn btn-secondary">Back to Parties</a>

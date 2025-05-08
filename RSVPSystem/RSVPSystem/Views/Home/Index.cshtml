@@ -1,4 +1,4 @@
-﻿@model List<RSVPSystem.Models.Party>
+﻿@model IEnumerable<RSVPSystem.Models.Party>
 
 <h1>RSVP Now</h1>
 
@@ -19,8 +19,8 @@
                 <td>@party.Location</td>
                 <td>@party.Date.ToString("yyyy/MM/dd")</td>
                 <td>
-                    <a asp-action="Register" asp-route-partyName="@party.Name" class="btn btn-primary">Register</a>
-                    <a asp-action="ShowAttendees" asp-route-partyName="@party.Name" class="btn btn-info">Show Attendees</a>
+                    <a asp-action="Register" asp-route-partyId="@party.Id" class="btn btn-primary">Register</a>
+                    <a asp-action="ShowAttendees" asp-route-partyId="@party.Id" class="btn btn-info">Show Attendees</a>
                 </td>
             </tr>
         }
