@@ -1,3 +1,10 @@
+/*
+ * @Author: Kyouko
+ * @Date: 2025-03-25 17:15:45
+ * @LastEditTime: 2025-05-13 08:31:51
+ * @Description: 请输入文件描述
+ * @FilePath: /FlagQuizGame/app/src/main/java/com/example/flagquizgame/MainActivity.java
+ */
 // MainActivity.java
 package com.example.flagquizgame;
 
